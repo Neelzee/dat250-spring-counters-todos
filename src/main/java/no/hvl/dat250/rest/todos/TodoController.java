@@ -35,7 +35,7 @@ public class TodoController {
         return ResponseEntity.ok(t);
       }
     }
-    return ResponseEntity.status(HttpStatus.NOT_FOUND).body(("message: " + TODO_WITH_THE_ID_X_NOT_FOUND).formatted(id));
+    return ResponseEntity.status(HttpStatus.NOT_FOUND).body(String.format(TODO_WITH_THE_ID_X_NOT_FOUND, id));
   }
 
   @PutMapping("/todos/{id}")
@@ -51,7 +51,7 @@ public class TodoController {
         return ResponseEntity.ok(oldTodo);
       }
     }
-    return ResponseEntity.status(HttpStatus.NOT_FOUND).body(("message: " + TODO_WITH_THE_ID_X_NOT_FOUND).formatted(id));
+    return ResponseEntity.status(HttpStatus.NOT_FOUND).body(String.format(TODO_WITH_THE_ID_X_NOT_FOUND, id));
   }
 
   @PostMapping("/todos")
