@@ -1,5 +1,8 @@
 package no.hvl.dat250.rest.todos;
 
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.http.StreamingHttpOutputMessage;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,18 +29,17 @@ public class TodoController {
   }
 
   @GetMapping("/todos/{id}")
-  public Todo getTodo(@PathVariable long id) {
+  public ResponseEntity<?> getTodo(@PathVariable long id) {
     for (Todo t : TodoController.todos) {
       if (t.getId() == id) {
-        return t;
+        return ResponseEntity.ok(t);
       }
     }
-
-    return errorTodo(id);
+    return ResponseEntity.status(HttpStatus.NOT_FOUND).body(("message: " + TODO_WITH_THE_ID_X_NOT_FOUND).formatted(id));
   }
 
   @PutMapping("/todos/{id}")
-  public Todo putTodo(@RequestBody Todo newTodo, @PathVariable long id) {
+  public ResponseEntity<?> putTodo(@RequestBody Todo newTodo, @PathVariable long id) {
     Todo oldTodo;
     for (Todo t : TodoController.todos) {
       if (t.getId() == id) {
@@ -46,11 +48,10 @@ public class TodoController {
         oldTodo.setDescription(newTodo.getDescription());
         oldTodo.setSummary(newTodo.getSummary());
 
-        return oldTodo;
+        return ResponseEntity.ok(oldTodo);
       }
     }
-
-    return errorTodo(id);
+    return ResponseEntity.status(HttpStatus.NOT_FOUND).body(("message: " + TODO_WITH_THE_ID_X_NOT_FOUND).formatted(id));
   }
 
   @PostMapping("/todos")
@@ -83,13 +84,5 @@ public class TodoController {
     TodoController.id += 1;
 
     return id;
-  }
-
-
-  private Todo errorTodo(long id) {
-    Todo err = new Todo();
-    err.setDescription(String.format(TODO_WITH_THE_ID_X_NOT_FOUND, id));
-
-    return err;
   }
 }
