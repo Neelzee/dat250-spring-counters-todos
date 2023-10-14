@@ -14,6 +14,7 @@ import java.util.stream.Collectors;
 /**
  * Rest-Endpoint for todos.
  */
+@CrossOrigin(origins = {"http://localhost:4200"})
 @RestController
 public class TodoController {
 
@@ -35,7 +36,7 @@ public class TodoController {
         return ResponseEntity.ok(t);
       }
     }
-    return ResponseEntity.status(HttpStatus.NOT_FOUND).body(String.format(TODO_WITH_THE_ID_X_NOT_FOUND, id));
+    return ResponseEntity.status(HttpStatus.NOT_FOUND).body("\"message\":\"" + String.format(TODO_WITH_THE_ID_X_NOT_FOUND, id));
   }
 
   @PutMapping("/todos/{id}")
@@ -65,13 +66,15 @@ public class TodoController {
 
 
   @DeleteMapping("/todos/{id}")
-  public void deleteTodo(@PathVariable long id) {
-    TodoController.todos = TodoController.todos
-            .stream()
-            .filter(
-                    t -> t.getId() != id
-            )
-            .collect(Collectors.toList());
+  public ResponseEntity<?> deleteTodo(@PathVariable long id) {
+    for (Todo t : TodoController.todos) {
+      if (t.getId() == id) {
+        TodoController.todos.remove(t);
+        return ResponseEntity.ok(t);
+      }
+    }
+
+    return ResponseEntity.status(HttpStatus.NOT_FOUND).body(String.format(TODO_WITH_THE_ID_X_NOT_FOUND, id));
   }
 
   /**
